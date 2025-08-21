@@ -1,1 +1,6 @@
+# nhost.toml
+
+[functions."cuvette-service"]
+source = "."
+dockerfile = "./Dockerfile"
 
