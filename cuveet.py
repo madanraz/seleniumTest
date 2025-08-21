@@ -9,7 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # --- CONFIG ---
-CHROME_DRIVER_PATH = "chromedriver"
+CHROME_DRIVER_PATH = "/usr/bin/chromedriver"
+
 CACHE_DIR = "internship_cache"
 
 os.makedirs(CACHE_DIR, exist_ok=True)
@@ -151,3 +152,4 @@ if __name__ == "__main__":
         for key, value in internship.items():
             print(f"{key}: {value}")
         print('-' * 50)
+
