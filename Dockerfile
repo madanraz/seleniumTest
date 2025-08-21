@@ -1,17 +1,33 @@
+# Use official Python base image
 FROM python:3.10-slim
 
-# Install Chrome & dependencies
-RUN apt-get update && apt-get install -y wget gnupg unzip curl \
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update && apt-get install -y google-chrome-stable chromium-driver \
+# Install system dependencies (Chrome + ChromeDriver)
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    unzip \
+    curl \
+    chromium \
+    chromium-driver \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Set display for headless Chrome
+ENV DISPLAY=:99
+
+# Set working directory
 WORKDIR /app
+
+# Copy requirements first (for caching)
 COPY requirements.txt requirements.txt
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy project files
 COPY . .
 
-CMD ["python", "app.py"]
+# Expose Flask app port
+EXPOSE 5000
+
+# Run Flask app with Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
